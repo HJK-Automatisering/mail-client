@@ -1,0 +1,32 @@
+# Miljø
+.env
+stack.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+env/
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Test og coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data
+*.db
+attachments/
+
+# Editorer
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

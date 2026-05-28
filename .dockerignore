@@ -1,0 +1,36 @@
+# Versionsstyring
+.git/
+.gitignore
+
+# Miljø
+.env
+stack.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+env/
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Test og coverage
+test.py
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data
+*.db
+attachments/
+
+# Udvikling
+.vscode/
+.devcontainer/
+docker-compose.yaml
+README.md

@@ -1,0 +1,42 @@
+services:
+  worker:
+    # image: ghcr.io/hjk-automatisering/mail-client:main # Uncomment on portainer
+    build: . # Remove on portainer
+    container_name: mail-client-worker
+    command: python worker.py
+    restart: unless-stopped
+    volumes:
+      - internal-attachments:/app/attachments
+      - external-attachments:/shared
+    env_file:
+      - .env # stack.env on portainer
+
+
+  api:
+    # image: ghcr.io/hjk-automatisering/mail-client:main
+    build: . # Remove on portainer
+    container_name: mail-client-api
+    command: uvicorn api:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    ports:
+      - "8000:8000" # Remove on portainer
+    volumes:
+      - internal-attachments:/app/attachments
+      - external-attachments:/shared
+    env_file:
+      - .env # stack.env on portainer
+    networks:
+      - nginx-proxy-manager_default
+      - default
+
+volumes:
+  internal-attachments:
+    external: true
+    name: mail-client-internal-attachments
+  external-attachments:
+    external: true
+    name: mail-client-external-attachments
+
+networks:
+    nginx-proxy-manager_default:
+        external: true
