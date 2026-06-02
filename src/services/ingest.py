@@ -57,11 +57,78 @@ class _HTMLStripper(HTMLParser):
 
         super().__init__()
         self._parts = []
+        self._skip = False
+
+    def handle_starttag(self, tag, attrs):
+        '''
+        Description:
+            Sets skip flag when entering style or script tags.
+
+        Flow:
+            None
+
+        Args:
+            tag (str): HTML tag name.
+            attrs (list): Tag attributes.
+
+        Returns:
+            None
+
+        Raises:
+            None
+
+        '''
+
+        if tag in ("style", "script"):
+            self._skip = True
+
+    def handle_endtag(self, tag):
+        '''
+        Description:
+            Clears skip flag when leaving style or script tags.
+
+        Flow:
+            None
+
+        Args:
+            tag (str): HTML tag name.
+
+        Returns:
+            None
+
+        Raises:
+            None
+
+        '''
+
+        if tag in ("style", "script"):
+            self._skip = False
+
+    def handle_comment(self, data):
+        '''
+        Description:
+            Ignores HTML comments.
+
+        Flow:
+            None
+
+        Args:
+            data (str): Comment content.
+
+        Returns:
+            None
+
+        Raises:
+            None
+
+        '''
+
+        pass
 
     def handle_data(self, data):
         '''
         Description:
-            Collects visible text content, ignoring all HTML tags.
+            Collects visible text content, skipping style and script blocks.
 
         Flow:
             None
@@ -77,7 +144,8 @@ class _HTMLStripper(HTMLParser):
 
         '''
 
-        self._parts.append(data)
+        if not self._skip:
+            self._parts.append(data)
 
     def get_text(self) -> str:
         '''
