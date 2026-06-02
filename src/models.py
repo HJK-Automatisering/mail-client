@@ -21,6 +21,7 @@ class Email(Base):
         subject (str | None): Email subject line.
         received_at (datetime): Timestamp when the email was received.
         body (str | None): Plain text body content.
+        body_raw (str | None): Raw HTML body content.
         attachments: Related Attachment records.
 
     Returns:
@@ -38,6 +39,7 @@ class Email(Base):
     subject: Mapped[str | None] = mapped_column(String(1000))
     received_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     body: Mapped[str | None] = mapped_column(Text)
+    body_raw: Mapped[str | None] = mapped_column(Text)
 
     attachments: Mapped[list["Attachment"]] = relationship(
         "Attachment", back_populates="email", cascade="all, delete-orphan")

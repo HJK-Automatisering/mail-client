@@ -3,6 +3,7 @@ import logging
 import os
 import uuid
 from datetime import datetime
+from html.parser import HTMLParser
 from zoneinfo import ZoneInfo
 
 from sqlalchemy.orm import Session
@@ -15,6 +16,113 @@ logger = logging.getLogger(__name__)
 
 _TZ = ZoneInfo("Europe/Copenhagen")
 _FILE_ATTACHMENT = "#microsoft.graph.fileAttachment"
+
+class _HTMLStripper(HTMLParser):
+    '''
+    Description:
+        Minimal HTML parser that extracts plain text from an HTML string.
+
+    Flow:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    '''
+
+    def __init__(self):
+        '''
+        Description:
+            Initialises the parser and internal text buffer.
+
+        Flow:
+            None
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            None
+
+        '''
+
+        super().__init__()
+        self._parts = []
+
+    def handle_data(self, data):
+        '''
+        Description:
+            Collects visible text content, ignoring all HTML tags.
+
+        Flow:
+            None
+
+        Args:
+            data (str): Text node content.
+
+        Returns:
+            None
+
+        Raises:
+            None
+
+        '''
+
+        self._parts.append(data)
+
+    def get_text(self) -> str:
+        '''
+        Description:
+            Returns the collected plain text joined and stripped.
+
+        Flow:
+            None
+
+        Args:
+            None
+
+        Returns:
+            str: Plain text content.
+
+        Raises:
+            None
+
+        '''
+
+        return " ".join(self._parts).strip()
+
+def _strip_html(html: str) -> str:
+    '''
+    Description:
+        Strips HTML tags from a string and returns plain text.
+
+    Flow:
+        1. Feed HTML string into _HTMLStripper.
+        2. Return collected plain text.
+
+    Args:
+        html (str): HTML string to strip.
+
+    Returns:
+        str: Plain text content.
+
+    Raises:
+        None
+
+    '''
+
+    stripper = _HTMLStripper()
+    stripper.feed(html)
+    return stripper.get_text()
 
 class IngestService:
     '''
@@ -105,7 +213,8 @@ class IngestService:
                 received_at=datetime.fromisoformat(
                     raw["receivedDateTime"].replace("Z", "+00:00")
                 ).astimezone(_TZ),
-                body=raw.get("body", {}).get("content", ""))
+                body_raw=raw.get("body", {}).get("content", ""),
+                body=_strip_html(raw.get("body", {}).get("content", "")))
             session.add(email)
 
             for raw_att in raw.get("attachments", []):

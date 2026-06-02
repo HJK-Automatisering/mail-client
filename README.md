@@ -76,6 +76,7 @@ Returnerer hentede mails, nyeste først.
     "sender": "afsender@example.com",
     "subject": "Emne",
     "body": "Beskedtekst...",
+    "body_raw": "<html>...</html>",
     "received_at": "2024-01-15T08:30:00",
     "attachments": [
       {

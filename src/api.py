@@ -152,6 +152,7 @@ def list_emails(
             "sender": e.sender,
             "subject": e.subject,
             "body": e.body,
+            "body_raw": e.body_raw,
             "received_at": e.received_at,
             "attachments": [
                 {
