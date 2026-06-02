@@ -128,7 +128,7 @@ class GraphClient:
         '''
 
         url = (
-            f"https://graph.microsoft.com/v1.0/users/{self._config.user_id}/messages"
+            f"https://graph.microsoft.com/v1.0/users/{self._config.user_id}/mailFolders/inbox/messages"
             "?$top=50&$orderby=receivedDateTime desc&$expand=attachments")
         results = []
         while url:
